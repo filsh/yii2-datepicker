@@ -1,6 +1,12 @@
 yii2-datepicker
 ===============
 
+Datepicker active form field for yii2 framework
+
+Dependencies
+===============
+https://github.com/Filsh/bootstrap-datepicker
+
 Usage
 ===============
 

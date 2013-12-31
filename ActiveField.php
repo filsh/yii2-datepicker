@@ -2,6 +2,7 @@
 
 namespace yii\datepicker;
 
+use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 
@@ -12,6 +13,19 @@ class ActiveField extends \yii\widgets\ActiveField
     public $clientEvents;
     
     public $addonOptions = ['class' => 'input-group-addon'];
+    
+    public function init()
+    {
+        if(empty($this->clientOptions['language'])) {
+            $language = str_replace('-', '_', strtolower(Yii::$app->language));
+            if(strpos($language, '_') !== false) {
+                $language = explode('_', $language)[0];
+            }
+            $this->clientOptions['language'] = $language;
+        }
+        
+        parent::init();
+    }
     
     public function datepickerInput($options = [])
     {
