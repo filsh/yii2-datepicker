@@ -22,7 +22,7 @@ for active form
     'clientOptions' => [
         'format' => 'mm/dd/yyyy'
     ],
-    'addonOptions' => [
+    'addon' => [
         'class' => 'input-group-addon',
         'content' => '<span class="flaticon-small58"></span>'
     ]
