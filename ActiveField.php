@@ -6,70 +6,83 @@ use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 
+/**
+ * Renders an datepicker field.
+ *
+ * For example:
+ *
+ * ```php
+ * $form->field($model, 'datetime', [
+ *      'class' => 'yii\datepicker\ActiveField',
+ *      'options' => ['class' => 'input-group'],
+ *      'template' => "{label}\n{input}{addon}\n{error}\n{hint}",
+ *      'parts' => [
+ *          '{error}' => '',
+ *          '{addon}' => '<span class="input-group-addon">
+ *                            <span class="flaticon-small58"></span>
+ *                        </span>'
+ *      ],
+ *      'inputOptions' => [
+ *          'class' => 'form-control',
+ *          'placeholder' => $model->getAttributeLabel('datetime')
+ *      ]
+ *  ])->datepickerInput([
+ *     'clientOptions' => [
+ *          'format' => 'dd.mm.yyyy',
+ *          'beforeShowDay' => new JsExpression("function(date) {
+ *              return date.valueOf() >= nowDate.valueOf();
+ *          }")
+ *      ],
+ *      'clientEvents' => [
+ *          'changeDate' => "function(e) {
+ *              $(this).datepicker('hide');
+ *          }"
+ *      ],
+ *      'addon' => [
+ *          'class' => 'input-group-addon',
+ *          'content' => '<span class="flaticon-small58"></span>'
+ *      ]
+ *  ])
+ * ```
+ */
 class ActiveField extends \yii\widgets\ActiveField
 {
-    public $clientOptions;
-    
-    public $clientEvents;
-    
-    public $addon = ['class' => 'input-group-addon', 'type' => 'append'];
-    
-    public function init()
-    {
-        if(empty($this->clientOptions['language'])) {
-            $language = str_replace('-', '_', strtolower(Yii::$app->language));
-            if(strpos($language, '_') !== false) {
-                $language = explode('_', $language)[0];
-            }
-            $this->clientOptions['language'] = $language;
-        }
-        
-        parent::init();
-    }
-    
     public function datepickerInput($options = [])
     {
-        $options = array_merge($this->inputOptions, $options);
         DatePickerAsset::register($this->form->getView());
-        $this->registerScript($options);
-        $this->registerEvent($options);
+        $this->registerScript(!empty($options['clientOptions']) ? $options['clientOptions'] : []);
+        $this->registerEvent(!empty($options['clientEvents']) ? $options['clientEvents'] : []);
         
-        parent::textInput($options);
-        
-        $content = isset($this->addon['content']) ? $this->addon['content'] : '';
-        unset($this->addon['content']);
-        $addonHtml = Html::tag('span', $content, $this->addon);
-        if(isset($this->addon['type']) && $this->addon['type'] === 'prepend') {
-            $this->parts['{input}'] = $addonHtml . $this->parts['{input}'];
-        } else {
-            $this->parts['{input}'] .= $addonHtml;
-        }
-        return $this;
+        return parent::textInput();
     }
     
     protected function registerScript($options = [])
     {
-        if (!empty($this->clientOptions)) {
-            $configure = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
-            if (!array_key_exists('id', $options)) {
-                $options['id'] = Html::getInputId($this->model, $this->attribute);
+        if(!isset($options['language'])) {
+            $language = str_replace('-', '_', strtolower(Yii::$app->language));
+            if(strpos($language, '_') !== false) {
+                $language = explode('_', $language)[0];
             }
-            $js = "jQuery('#{$options['id']}').datepicker($configure);";
-            $this->form->getView()->registerJs($js);
+            $options['language'] = $language;
         }
+        
+        $configure = !empty($options) ? Json::encode($options) : '';
+        if (!isset($options['id'])) {
+            $options['id'] = Html::getInputId($this->model, $this->attribute);
+        }
+        $this->form->getView()->registerJs("jQuery('#{$options['id']}').datepicker($configure);");
     }
 
     protected function registerEvent($options = [])
     {
-        if (!empty($this->clientEvents)) {
-            $js = [];
-            if (!array_key_exists('id', $options)) {
-                $options['id'] = Html::getInputId($this->model, $this->attribute);
-            }
-            foreach ($this->clientEvents as $event => $handle) {
-                $js[] = "jQuery('#{$options["id"]}').on('$event', $handle);";
-            }
-            $this->form->getView()->registerJs(implode(PHP_EOL, $js));
+        if (!isset($options['id'])) {
+            $id = Html::getInputId($this->model, $this->attribute);
+        } else {
+            $id = $options['id'];
+            unset($options['id']);
+        }
+        foreach ($options as $event => $handle) {
+            $this->form->getView()->registerJs("jQuery('#{$id}').on('$event', $handle);");
         }
     }
 }
