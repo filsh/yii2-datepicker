@@ -15,7 +15,8 @@
 		}
 	],
 	"require": {
-                "yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"filsh/bootstrap-datepicker": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\datepicker\\": "" }
