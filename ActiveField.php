@@ -12,7 +12,7 @@ class ActiveField extends \yii\widgets\ActiveField
     
     public $clientEvents;
     
-    public $addonOptions = ['class' => 'input-group-addon'];
+    public $addon = ['class' => 'input-group-addon', 'type' => 'append'];
     
     public function init()
     {
@@ -36,9 +36,14 @@ class ActiveField extends \yii\widgets\ActiveField
         
         parent::textInput($options);
         
-        $content = isset($this->addonOptions['content']) ? $this->addonOptions['content'] : '';
-        unset($this->addonOptions['content']);
-        $this->parts['{input}'] .= Html::tag('span', $content, $this->addonOptions);
+        $content = isset($this->addon['content']) ? $this->addon['content'] : '';
+        unset($this->addon['content']);
+        $addonHtml = Html::tag('span', $content, $this->addon);
+        if(isset($this->addon['type']) && $this->addon['type'] === 'prepend') {
+            $this->parts['{input}'] = $addonHtml . $this->parts['{input}'];
+        } else {
+            $this->parts['{input}'] .= $addonHtml;
+        }
         return $this;
     }
     
