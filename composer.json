@@ -1,6 +1,6 @@
 {
 	"name": "filsh/yii2-datepicker",
-	"description": "Library forked from https://github.com/yiidoc/yii2-datepicker, thanks to author.",
+	"description": "Datepicker active form field for yii2 framework",
 	"keywords": ["yii", "datepicker"],
 	"type": "library",
 	"license": "BSD-3-Clause",
