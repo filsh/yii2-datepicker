@@ -66,9 +66,12 @@ class ActiveField extends \yii\widgets\ActiveField
         $clientEvents = !empty($options['clientEvents']) ? $options['clientEvents'] : [];
         
         if (!isset($options['id'])) {
-            $options['id'] = $clientOptions['id'] = $clientEvents['id'] = Html::getInputId($this->model, $this->attribute) . '_inline';
+            $options['id'] =$clientOptions['id'] = $clientEvents['id'] = Html::getInputId($this->model, $this->attribute) . '_inline';
         }
-        $this->hint('', ['id' => $options['id'], 'tag' => 'div']);
+        
+        $calendarOptions = $options;
+        unset($calendarOptions['clientOptions'], $calendarOptions['clientEvents']);
+        $this->parts['{calendar}'] = Html::tag('div', '', $calendarOptions);
         $this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions);
         
         DatePickerAsset::register($this->form->getView());
