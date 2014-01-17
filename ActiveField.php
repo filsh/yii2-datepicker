@@ -56,6 +56,28 @@ class ActiveField extends \yii\widgets\ActiveField
         return parent::textInput();
     }
     
+    /**
+     * Print input as Embedded/inline calendar
+     * @param type $options
+     */
+    public function calendarInput($options = [])
+    {
+        $clientOptions = !empty($options['clientOptions']) ? $options['clientOptions'] : [];
+        $clientEvents = !empty($options['clientEvents']) ? $options['clientEvents'] : [];
+        
+        if (!isset($options['id'])) {
+            $options['id'] = $clientOptions['id'] = $clientEvents['id'] = Html::getInputId($this->model, $this->attribute) . '_inline';
+        }
+        $this->hint('', ['id' => $options['id'], 'tag' => 'div']);
+        $this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions);
+        
+        DatePickerAsset::register($this->form->getView());
+        $this->registerScript($clientOptions);
+        $this->registerEvent($clientEvents);
+        
+        return $this;
+    }
+    
     protected function registerScript($options = [])
     {
         if(!isset($options['language'])) {
