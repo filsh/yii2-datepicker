@@ -5,6 +5,7 @@ namespace yii\datepicker;
 use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * Renders an datepicker field.
@@ -70,8 +71,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $options['id'] = $clientOptions['id'] = $clientEvents['id'] = Html::getInputId($this->model, $this->attribute) . '_inline';
         }
         
-        $this->parts['{calendar}'] = Html::tag('div', '', $options);
-        $this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions);
+        $this->parts['{input}'] = Html::tag('div', Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions), $options);
         
         DatePickerAsset::register($this->form->getView());
         $this->registerScript($clientOptions);
@@ -83,11 +83,7 @@ class ActiveField extends \yii\widgets\ActiveField
     protected function registerScript($options = [])
     {
         if(!isset($options['language'])) {
-            $language = str_replace('-', '_', strtolower(Yii::$app->language));
-            if(strpos($language, '_') !== false) {
-                $language = explode('_', $language)[0];
-            }
-            $options['language'] = $language;
+            $options['language'] = $this->getLanguage();
         }
         
         $configure = !empty($options) ? Json::encode($options) : '';
@@ -108,5 +104,14 @@ class ActiveField extends \yii\widgets\ActiveField
         foreach ($options as $event => $handle) {
             $this->form->getView()->registerJs("jQuery('#{$id}').on('$event', $handle);");
         }
+    }
+    
+    protected function getLanguage()
+    {
+        $language = str_replace('-', '_', strtolower(Yii::$app->language));
+        if(strpos($language, '_') !== false) {
+            $language = explode('_', $language)[0];
+        }
+        return $language;
     }
 }
