@@ -17,12 +17,11 @@ class DatePickerAsset extends \yii\web\AssetBundle
     ];
     
     public $css = [
-        'css/datepicker.css'
+//        'css/datepicker.css'
     ];
     
     public $depends = [
-        'yii\web\JqueryAsset',
-        'yii\bootstrap\BootstrapAsset'
+        'yii\web\JqueryAsset'
     ];
     
     public function init()
