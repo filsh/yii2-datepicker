@@ -44,6 +44,66 @@ use yii\web\JsExpression;
  *          'content' => '<span class="flaticon-small58"></span>'
  *      ]
  *  ])
+ * 
+ * $form->field($model, 'date', [
+ *      'class' => 'yii\datepicker\ActiveField',
+ *      'enableClientValidation' => false,
+ *      'options' => ['class' => 'input-group calendar date'],
+ *      'inputOptions' => [
+ *          'class' => 'add-on'
+ *      ]
+ *  ])->calendarInput([
+ *      'clientOptions' => [
+ *          'format' => 'yyyy-mm-dd',
+ *          'todayHighlight' => true,
+ *          'beforeShowDay' => new JsExpression("(function() {
+ *              var t = new Date();
+ *              var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), 0, 0, 0, 0);
+ *              return function(date) {
+ *                  return date.valueOf() >= now.valueOf();
+ *              };
+ *          })()")
+ *      ]
+ *  ])
+ * 
+ *    $inputName = Html::getInputName($model, 'birthday');
+ *    $inputOptions = [
+ *        'class' => 'form-control input-sm',
+ *        'disabled' => 'disabled'
+ *    ];
+ *    $months = [
+ *        1 => P::t('common', 'January'),
+ *        2 => P::t('common', 'February'),
+ *        3 => P::t('common', 'March'),
+ *        4 => P::t('common', 'April'),
+ *        5 => P::t('common', 'May'),
+ *        6 => P::t('common', 'June'),
+ *        7 => P::t('common', 'July'),
+ *        8 => P::t('common', 'August'),
+ *        9 => P::t('common', 'September'),
+ *        10 => P::t('common', 'October'),
+ *        11 => P::t('common', 'November'),
+ *        12 => P::t('common', 'December'),
+ *    ];
+ *    $years = [];
+ *    for($i = date('Y') - MAX_AGE; $i < date('Y'); $i++) {
+ *        $years[$i] = $i;
+ *    }
+ *
+ *    echo $form->field($model, 'birthday', [
+ *        'class' => 'yii\datepicker\ActiveField',
+ *        'options' => ['class' => 'form-group child-birthday'],
+ *        'inputOptions' => $inputOptions
+ *    ])->compositeInput([
+ *        'inputWrapOptions' => [
+ *            'container' => ['class' => 'row'],
+ *            'options' => ['class' => 'col-sm-3'],
+ *            'parts' => [
+ *                '{month}' => Html::tag('div', Html::dropDownList($inputName . '[month]', null, $months, $inputOptions), ['class' => 'col-sm-5']),
+ *                '{year}' => Html::tag('div', Html::dropDownList($inputName . '[year]', null, $years, $inputOptions), ['class' => 'col-sm-4'])
+ *            ]
+ *        ]
+ *    ])
  * ```
  */
 class ActiveField extends \yii\widgets\ActiveField
@@ -76,6 +136,31 @@ class ActiveField extends \yii\widgets\ActiveField
         DatePickerAsset::register($this->form->getView());
         $this->registerScript($clientOptions);
         $this->registerEvent($clientEvents);
+        
+        return $this;
+    }
+    
+    public function compositeInput($options = [])
+    {
+        $options = !empty($options['inputWrapOptions']) ? $options['inputWrapOptions'] : [];
+        $inputName = Html::getInputName($this->model, $this->attribute);
+        $inputTemplate = isset($options['template']) ? $options['template'] : "{hidden}\n{day}\n{month}\n{year}";
+        $inputParts = isset($options['parts']) ? $options['parts'] : [];
+        
+        if(!isset($inputParts['{hidden}'])) {
+            $inputParts['{hidden}'] = Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions);
+        }
+        if(!isset($inputParts['{day}'])) {
+            $inputParts['{day}'] = Html::tag('div', Html::textInput($inputName . '[day]', null, array_merge($this->inputOptions, ['maxlength' => 2])), $options['options']);
+        }
+        if(!isset($inputParts['{month}'])) {
+            $inputParts['{month}'] = Html::tag('div', Html::textInput($inputName . '[month]', null, array_merge($this->inputOptions, ['maxlength' => 2])), $options['options']);
+        }
+        if(!isset($inputParts['{year}'])) {
+            $inputParts['{year}'] = Html::tag('div', Html::textInput($inputName . '[year]', null, array_merge($this->inputOptions, ['maxlength' => 4])), $options['options']);
+        }
+        
+        $this->parts['{input}'] = Html::tag('div', strtr($inputTemplate, $inputParts), $options['container']);
         
         return $this;
     }
