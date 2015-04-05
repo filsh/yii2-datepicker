@@ -10,14 +10,14 @@ use \Yii;
  */
 class DatePickerAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@vendor/filsh/bootstrap-datepicker';
+    public $sourcePath = '@bower/bootstrap-datepicker';
 
     public $js = [
         'js/bootstrap-datepicker.js'
     ];
     
     public $css = [
-//        'css/datepicker.css'
+        'css/datepicker.css'
     ];
     
     public $depends = [
@@ -26,11 +26,13 @@ class DatePickerAsset extends \yii\web\AssetBundle
     
     public function init()
     {
-        $language = str_replace('-', '_', strtolower(Yii::$app->language));
-        if(strpos($language, '_') !== false) {
-            $language = explode('_', $language)[0];
+        if(!empty($this->js)) {
+            $language = str_replace('-', '_', strtolower(Yii::$app->language));
+            if(strpos($language, '_') !== false) {
+                $language = explode('_', $language)[0];
+            }
+            $this->js[] = 'js/locales/bootstrap-datepicker.'. $language .'.js';
         }
-        $this->js[] = 'js/locales/bootstrap-datepicker.'. $language .'.js';
         
         parent::init();
     }
