@@ -12,6 +12,8 @@ class DatePickerAsset extends \yii\web\AssetBundle
 {
     public $sourcePath = '@bower/bootstrap-datepicker';
 
+    public $enableLocale = true;
+    
     public $js = [
         'js/bootstrap-datepicker.js'
     ];
@@ -26,12 +28,12 @@ class DatePickerAsset extends \yii\web\AssetBundle
     
     public function init()
     {
-        if(!empty($this->js)) {
+        if(!empty($this->js) && $this->enableLocale) {
             $language = str_replace('-', '_', strtolower(Yii::$app->language));
             if(strpos($language, '_') !== false) {
                 $language = explode('_', $language)[0];
             }
-            $this->js[] = 'js/locales/bootstrap-datepicker.'. $language .'.js';
+            $this->js[] = 'bootstrap-datepickerjs/locales/bootstrap-datepicker.'. $language .'.js';
         }
         
         parent::init();
