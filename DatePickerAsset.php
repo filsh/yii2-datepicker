@@ -33,7 +33,7 @@ class DatePickerAsset extends \yii\web\AssetBundle
             if(strpos($language, '_') !== false) {
                 $language = explode('_', $language)[0];
             }
-            $this->js[] = 'bootstrap-datepickerjs/locales/bootstrap-datepicker.'. $language .'.js';
+            $this->js[] = 'bootstrap-datepicker/js/locales/bootstrap-datepicker.'. $language .'.js';
         }
         
         parent::init();
