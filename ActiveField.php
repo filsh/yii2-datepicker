@@ -111,8 +111,8 @@ class ActiveField extends \yii\widgets\ActiveField
     public function datepickerInput($options = [])
     {
         DatePickerAsset::register($this->form->getView());
-        $this->registerScript(!empty($options['clientOptions']) ? $options['clientOptions'] : []);
-        $this->registerEvent(!empty($options['clientEvents']) ? $options['clientEvents'] : []);
+        $this->registerScript(isset($options['clientOptions']) ? $options['clientOptions'] : false);
+        $this->registerEvent(isset($options['clientEvents']) ? $options['clientEvents'] : false);
         
         return parent::textInput();
     }
@@ -167,6 +167,10 @@ class ActiveField extends \yii\widgets\ActiveField
     
     protected function registerScript($options = [])
     {
+        if($options === false) {
+            return;
+        }
+        
         if(!isset($options['language'])) {
             $options['language'] = $this->getLanguage();
         }
@@ -180,6 +184,10 @@ class ActiveField extends \yii\widgets\ActiveField
 
     protected function registerEvent($options = [])
     {
+        if($options === false) {
+            return;
+        }
+        
         if (!isset($options['id'])) {
             $id = Html::getInputId($this->model, $this->attribute);
         } else {
