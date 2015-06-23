@@ -10,16 +10,16 @@ use \Yii;
  */
 class DatePickerAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@bower/bootstrap-datepicker';
+    public $sourcePath = '@bower';
 
     public $enableLocale = true;
     
     public $js = [
-        'js/bootstrap-datepicker.js'
+        'bootstrap-datepicker/js/bootstrap-datepicker.js'
     ];
     
     public $css = [
-        'css/datepicker.css'
+        'bootstrap-datepicker/css/datepicker.css'
     ];
     
     public $depends = [
