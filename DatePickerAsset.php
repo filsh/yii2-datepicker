@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\datepicker;
+namespace filsh\datepicker;
 
 use \Yii;
 
@@ -10,32 +10,40 @@ use \Yii;
  */
 class DatePickerAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@bower';
+    public $sourcePath = '@bower/bootstrap-datepicker/dist';
 
     public $enableLocale = true;
     
     public $js = [
-        'bootstrap-datepicker/js/bootstrap-datepicker.js'
+        'js/bootstrap-datepicker.min.js'
     ];
     
     public $css = [
-        'bootstrap-datepicker/css/datepicker.css'
+        'css/bootstrap-datepicker3.min.css'
     ];
     
     public $depends = [
-        'yii\web\JqueryAsset'
+        \yii\web\JqueryAsset::class
     ];
     
     public function init()
     {
-        if(!empty($this->js) && $this->enableLocale) {
-            $language = str_replace('-', '_', strtolower(Yii::$app->language));
-            if(strpos($language, '_') !== false) {
-                $language = explode('_', $language)[0];
-            }
-            $this->js[] = 'bootstrap-datepicker/js/locales/bootstrap-datepicker.'. $language .'.js';
+        if(!empty($this->js) && $this->enableLocale && ($language = $this->getLanguage()) !== null) {
+            $this->js[] = 'js/locales/bootstrap-datepicker.'. $language .'.min.js';
         }
         
         parent::init();
+    }
+    
+    protected function getLanguage()
+    {
+        $language = str_replace('-', '_', strtolower(Yii::$app->language));
+        if(strpos($language, '_') !== false) {
+            $language = explode('_', $language)[0];
+        }
+        if($language === 'en') {
+            $language = null;
+        }
+        return $language;
     }
 }

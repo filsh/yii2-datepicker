@@ -13,7 +13,7 @@ Usage
 for active form
 ```php
 <?= $form->field($model, 'datetime', [
-    'class' => 'yii\datepicker\ActiveField',
+    'class' => 'filsh\datepicker\ActiveField',
     'options' => ['class' => 'input-group'],
     'inputOptions' => [
         'class' => 'form-control',

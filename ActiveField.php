@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\datepicker;
+namespace filsh\datepicker;
 
 use \Yii;
 use yii\helpers\Html;
@@ -14,7 +14,7 @@ use yii\web\JsExpression;
  *
  * ```php
  * $form->field($model, 'datetime', [
- *      'class' => 'yii\datepicker\ActiveField',
+ *      'class' => 'filsh\datepicker\ActiveField',
  *      'options' => ['class' => 'input-group'],
  *      'template' => "{label}\n{input}{addon}\n{error}\n{hint}",
  *      'parts' => [
@@ -46,7 +46,7 @@ use yii\web\JsExpression;
  *  ])
  * 
  * $form->field($model, 'date', [
- *      'class' => 'yii\datepicker\ActiveField',
+ *      'class' => 'filsh\datepicker\ActiveField',
  *      'enableClientValidation' => false,
  *      'options' => ['class' => 'input-group calendar date'],
  *      'inputOptions' => [
@@ -91,7 +91,7 @@ use yii\web\JsExpression;
  *    }
  *
  *    echo $form->field($model, 'birthday', [
- *        'class' => 'yii\datepicker\ActiveField',
+ *        'class' => 'filsh\datepicker\ActiveField',
  *        'options' => ['class' => 'form-group child-birthday'],
  *        'inputOptions' => $inputOptions
  *    ])->compositeInput([
