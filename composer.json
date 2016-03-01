@@ -19,7 +19,8 @@
                 "bower-asset/bootstrap-datepicker": "1.4.0"
 	},
 	"autoload": {
-		"psr-0": { "yii\\datepicker\\": "" }
-	},
-	"target-dir": "yii/datepicker"
+	        "psr-4": {
+	            "filsh\\datepicker\\": ""
+	        }
+    	}
 }
