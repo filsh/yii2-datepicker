@@ -39,10 +39,6 @@ use yii\web\JsExpression;
  *              $(this).datepicker('hide');
  *          }"
  *      ],
- *      'addon' => [
- *          'class' => 'input-group-addon',
- *          'content' => '<span class="flaticon-small58"></span>'
- *      ]
  *  ])
  * 
  * $form->field($model, 'date', [
@@ -114,7 +110,7 @@ class ActiveField extends \yii\widgets\ActiveField
         $this->registerScript(isset($options['clientOptions']) ? $options['clientOptions'] : false);
         $this->registerEvent(isset($options['clientEvents']) ? $options['clientEvents'] : false);
         
-        return parent::textInput();
+        return $this;
     }
     
     /**
@@ -140,39 +136,14 @@ class ActiveField extends \yii\widgets\ActiveField
         return $this;
     }
     
-    public function compositeInput($options = [])
-    {
-        $options = !empty($options['inputWrapOptions']) ? $options['inputWrapOptions'] : [];
-        $inputName = Html::getInputName($this->model, $this->attribute);
-        $inputTemplate = isset($options['template']) ? $options['template'] : "{hidden}\n{day}\n{month}\n{year}";
-        $inputParts = isset($options['parts']) ? $options['parts'] : [];
-        
-        if(!isset($inputParts['{hidden}'])) {
-            $inputParts['{hidden}'] = Html::activeHiddenInput($this->model, $this->attribute, $this->inputOptions);
-        }
-        if(!isset($inputParts['{day}'])) {
-            $inputParts['{day}'] = Html::tag('div', Html::textInput($inputName . '[day]', null, array_merge($this->inputOptions, ['maxlength' => 2])), $options['options']);
-        }
-        if(!isset($inputParts['{month}'])) {
-            $inputParts['{month}'] = Html::tag('div', Html::textInput($inputName . '[month]', null, array_merge($this->inputOptions, ['maxlength' => 2])), $options['options']);
-        }
-        if(!isset($inputParts['{year}'])) {
-            $inputParts['{year}'] = Html::tag('div', Html::textInput($inputName . '[year]', null, array_merge($this->inputOptions, ['maxlength' => 4])), $options['options']);
-        }
-        
-        $this->parts['{input}'] = Html::tag('div', strtr($inputTemplate, $inputParts), $options['container']);
-        
-        return $this;
-    }
-    
     protected function registerScript($options = [])
     {
         if($options === false) {
             return;
         }
         
-        if(!isset($options['language'])) {
-            $options['language'] = $this->getLanguage();
+        if(!isset($options['language']) && ($language = $this->getLanguage()) !== null) {
+            $options['language'] = $language;
         }
         
         $configure = !empty($options) ? Json::encode($options) : '';
@@ -204,6 +175,9 @@ class ActiveField extends \yii\widgets\ActiveField
         $language = str_replace('-', '_', strtolower(Yii::$app->language));
         if(strpos($language, '_') !== false) {
             $language = explode('_', $language)[0];
+        }
+        if($language === 'en') {
+            $language = null;
         }
         return $language;
     }
